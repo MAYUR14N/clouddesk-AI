@@ -4,25 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-
-enum TicketStatus {
-  OPEN
-  IN_PROGRESS
-  RESOLVED
-  CLOSED
-}
-
-enum TicketPriority {
-  LOW
-  MEDIUM
-  HIGH
-  URGENT
+  url = env("DATABASE_URL")
 }
 
 model User {
@@ -30,7 +12,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      Role     @default(USER)
+  role      String   @default("USER")
   createdAt DateTime @default(now())
   tickets   Ticket[] @relation("CreatedTickets")
   assignedTickets Ticket[] @relation("AssignedTickets")
@@ -43,8 +25,8 @@ model Ticket {
   title            String
   description      String
   category         String?
-  priority         TicketPriority @default(MEDIUM)
-  status           TicketStatus   @default(OPEN)
+  priority         String   @default("MEDIUM")
+  status           String   @default("OPEN")
   createdById      Int
   assignedAdminId  Int?
   createdAt        DateTime @default(now())
