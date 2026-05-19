@@ -1,13 +1,2 @@
-module.exports = {
-  datasource: {
-    db: {
-      provider: "sqlite",
-      url: "file:./dev.db",
-    },
-  },
-  generator: {
-    client: {
-      provider: "prisma-client-js",
-    },
-  },
-};
+module.exports = {};
+

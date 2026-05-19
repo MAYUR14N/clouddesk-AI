@@ -1,6 +1,6 @@
-import prisma from '../../lib/prismaClient.js';
-import { generateToken } from '../../middleware/authMiddleware.js'; // not used but ensure import exists
-import { suggestCategory, suggestPriority } from '../../services/aiService.js';
+import prisma from '../lib/prismaClient.js';
+
+import { suggestCategory, suggestPriority } from '../services/aiService.js';
 
 // Helper to create a history entry
 async function createHistory(ticketId, userId, action) {

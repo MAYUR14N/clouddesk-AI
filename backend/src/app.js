@@ -3,10 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import authRoutes from '../routes/auth.js';
-import ticketRoutes from '../routes/tickets.js';
-import adminRoutes from '../routes/admin.js';
-import errorHandler from '../middleware/errorHandler.js';
+import authRoutes from './routes/auth.js';
+import ticketRoutes from './routes/tickets.js';
+import adminRoutes from './routes/admin.js';
+import errorHandler from './middleware/errorHandler.js';
 
 dotenv.config();
 
