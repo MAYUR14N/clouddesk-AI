@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white/10 backdrop-blur-md rounded-xl border border-white/20;
+  }
+  .radial-gradient {
+    background: radial-gradient(circle at top left, #4f46e5, #1e40af);
+  }
+}

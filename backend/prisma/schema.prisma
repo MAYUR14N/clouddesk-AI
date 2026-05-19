@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  tickets   Ticket[] @relation("CreatedTickets")
+  assignedTickets Ticket[] @relation("AssignedTickets")
+  messages  TicketMessage[]
+  histories TicketHistory[]
+}
+
+model Ticket {
+  id               Int            @id @default(autoincrement())
+  title            String
+  description      String
+  category         String?
+  priority         TicketPriority @default(MEDIUM)
+  status           TicketStatus   @default(OPEN)
+  createdById      Int
+  assignedAdminId  Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  creator          User @relation("CreatedTickets", fields: [createdById], references: [id])
+  assignedAdmin    User? @relation("AssignedTickets", fields: [assignedAdminId], references: [id])
+  messages         TicketMessage[]
+  histories        TicketHistory[]
+}
+
+model TicketMessage {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  senderId  Int
+  message   String
+  isAI      Boolean @default(false)
+  createdAt DateTime @default(now())
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
+}
+
+model TicketHistory {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  actorId   Int
+  action    String
+  createdAt DateTime @default(now())
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  actor     User     @relation(fields: [actorId], references: [id])
+}
