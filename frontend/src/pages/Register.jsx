@@ -18,8 +18,8 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!passwordsMatch) { setError('Passwords do not match'); return; }
-    setError('');
-    setLoading(true);
+    console.log('REGISTER STEP 1');
+    console.log('API URL:', import.meta.env.VITE_API_URL);
     console.log('Attempting register', { name, email, password });
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {

@@ -10,6 +10,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 // Register a new user
 export async function register(req, res) {
   const { email, password, name } = req.body;
+  console.log("REGISTER STEP 1");
+  console.log("BODY:", req.body);
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password required' });
   }
@@ -18,9 +20,11 @@ export async function register(req, res) {
     const user = await prisma.user.create({
       data: { email, password: hashed, name: name || '' },
     });
-    return res.status(201).json({ id: user.id, email: user.email });
+    // generate JWT token
+    const token = jwt.sign({ userId: user.id, role: user.role || 'user' }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    return res.status(201).json({ id: user.id, email: user.email, token });
   } catch (err) {
-    console.error(err);
+    console.error("REGISTER ERROR:", err);
     return res.status(500).json({ message: 'Registration failed' });
   }
 }
