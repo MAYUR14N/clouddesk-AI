@@ -1,4 +1,5 @@
 import express from 'express';
+import protect from '../middleware/auth.js';
 import {
   createTicket,
   getTickets,
@@ -10,11 +11,11 @@ import {
 
 const router = express.Router();
 
-router.post('/', createTicket);
-router.get('/', getTickets);
-router.get('/:id', getTicketById);
-router.patch('/:id/status', updateTicketStatus);
-router.post('/:id/message', addTicketMessage);
-router.get('/:id/history', getTicketHistory);
+router.post('/', protect, createTicket);
+router.get('/', protect, getTickets);
+router.get('/:id', protect, getTicketById);
+router.patch('/:id/status', protect, updateTicketStatus);
+router.post('/:id/message', protect, addTicketMessage);
+router.get('/:id/history', protect, getTicketHistory);
 
 export default router;

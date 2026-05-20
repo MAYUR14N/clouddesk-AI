@@ -1,85 +1,85 @@
-import React, { useState } from 'react';
-import GradientButton from '../components/GradientButton.jsx';
-import GlassCard from '../components/GlassCard.jsx';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    console.log("STEP 1");
+    console.log("STEP 2");
+    setError("");
     setLoading(true);
-    console.log('Attempting login with', { email, password });
+    console.log("API URL:", import.meta.env.VITE_API_URL);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.message || 'Login failed');
-        return;
+      console.log("FETCH COMPLETED", response);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
       }
-      // store token
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-      }
-      navigate('/dashboard');
+
+      const data = await response.json();
+      const token = data.token;
+      // Save token for authenticated requests
+      localStorage.setItem("token", token);
+      // Redirect to dashboard on success
+      navigate("/dashboard");
     } catch (err) {
-      console.error('Login error', err);
-      setError('Network error');
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <GlassCard className="p-8 shadow-2xl">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Login to CloudDesk AI</h2>
-      <form className="space-y-4" onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
+    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "2rem" }}>
+      <h2>Login</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="email" style={{ display: "block", marginBottom: "0.5rem" }}>
+            Email
+          </label>
           <input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 bg-white/10 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="you@example.com"
             required
+            style={{ width: "100%", padding: "0.5rem" }}
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
+        <div style={{ marginBottom: "1rem" }}>
+          <label htmlFor="password" style={{ display: "block", marginBottom: "0.5rem" }}>
+            Password
+          </label>
           <input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 bg-white/10 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="••••••••"
             required
+            style={{ width: "100%", padding: "0.5rem" }}
           />
         </div>
-        {error && <p className="text-sm text-red-400">{error}</p>}
-        <GradientButton
-          variant="primary"
-          className="w-full mt-4"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </GradientButton>
+        <button type="submit" disabled={loading} style={{ width: "100%", padding: "0.75rem" }}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
-      <p className="mt-4 text-center text-sm text-gray-400">
-        Don’t have an account? <Link to="/register" className="text-indigo-400 hover:underline">Register</Link>
-      </p>
-    </GlassCard>
+    </div>
   );
-}
+};
+
+export default Login;
